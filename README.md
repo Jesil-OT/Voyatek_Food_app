@@ -16,5 +16,8 @@
 - Build the project and run on an android device or emulator
 
 # Screenshots
-  
+<img src = "https://github.com/Jesil-OT/Voyatek_Food_app/blob/master/screenshots/Screenshot_20250302_035303.png" width="250"/> | <img src = "https://github.com/Jesil-OT/Voyatek_Food_app/blob/master/screenshots/Screenshot_20250302_040958.png" width="250"/>
+
+# Author
+- [Jesil Toborowei](https://github.com/Jesil-OT/)
 

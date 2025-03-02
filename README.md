@@ -20,4 +20,5 @@
 
 # Author
 - [Jesil Toborowei](https://github.com/Jesil-OT/)
+- get the apk [here](https://drive.google.com/file/d/1m7nfsp7ScJrg6M29TL0k2luQAkiLYn1c/view?usp=sharing)
 

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -136,135 +137,145 @@ fun AddFoodScreen(
             } else {
                 Column(
                     modifier = Modifier
-                        .padding(innerPadding)
-                        .padding(horizontal = 16.dp, vertical = 16.dp)
-                        .verticalScroll(rememberScrollState()),
+                        .fillMaxHeight()
+                        .padding(horizontal = 16.dp, vertical = 16.dp),
+                    verticalArrangement = Arrangement.SpaceBetween,
                     content = {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            content = {
-                                ImageItemButton(
-                                    modifier = Modifier.weight(1f),
-                                    onClick = {
-                                        PhotoManager.takePhoto(
-                                            context = context,
-                                            cameraLauncher = cameraLauncher,
-                                            permissionLauncher = requestCameraPermissionLauncher,
-                                            onCapturePhotoUri = { photoUri = it }
-                                        )
-                                    },
-                                    text = stringResource(R.string.take_photo),
-                                    image = painterResource(R.drawable.camera_icon),
-                                    contentDescription = stringResource(R.string.open_camara)
-                                )
-                                ImageItemButton(
-                                    modifier = Modifier.weight(1f),
-                                    onClick = {
-                                        PhotoManager.uploadPhoto(
-                                            uploadImageLauncher = uploadImageLauncher
-                                        )
-                                    },
-                                    text = stringResource(R.string.upload),
-                                    image = painterResource(R.drawable.upload_icon),
-                                    contentDescription = stringResource(R.string.choose_from_gallery)
-                                )
-                            }
-                        )
-                        Spacer(Modifier.height(12.dp))
-                        LazyRow(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            items(items = addFoodState.imagesUrl, key = { it }) { image ->
-                                ImageComponent(
-                                    modifier = Modifier.animateItem(),
-                                    image = image,
-                                    onDeleteClick = {
-                                        onAction(AddFoodScreenAction.OnDeleteImage(image))
-                                    })
-                            }
-                        }
+                        // needed for button alignment
+                       Column(
+                            modifier = Modifier
+                                .padding(innerPadding)
+                                .verticalScroll(rememberScrollState())
+                                .weight(1f, false),
+                           content = {
+                               Row(
+                                   horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                   content = {
+                                       ImageItemButton(
+                                           modifier = Modifier.weight(1f),
+                                           onClick = {
+                                               PhotoManager.takePhoto(
+                                                   context = context,
+                                                   cameraLauncher = cameraLauncher,
+                                                   permissionLauncher = requestCameraPermissionLauncher,
+                                                   onCapturePhotoUri = { photoUri = it }
+                                               )
+                                           },
+                                           text = stringResource(R.string.take_photo),
+                                           image = painterResource(R.drawable.camera_icon),
+                                           contentDescription = stringResource(R.string.open_camara)
+                                       )
+                                       ImageItemButton(
+                                           modifier = Modifier.weight(1f),
+                                           onClick = {
+                                               PhotoManager.uploadPhoto(
+                                                   uploadImageLauncher = uploadImageLauncher
+                                               )
+                                           },
+                                           text = stringResource(R.string.upload),
+                                           image = painterResource(R.drawable.upload_icon),
+                                           contentDescription = stringResource(R.string.choose_from_gallery)
+                                       )
+                                   }
+                               )
+                               Spacer(Modifier.height(12.dp))
+                               LazyRow(
+                                   modifier = Modifier.fillMaxWidth(),
+                                   horizontalArrangement = Arrangement.spacedBy(8.dp)
+                               ) {
+                                   items(items = addFoodState.imagesUrl, key = { it }) { image ->
+                                       ImageComponent(
+                                           modifier = Modifier.animateItem(),
+                                           image = image,
+                                           onDeleteClick = {
+                                               onAction(AddFoodScreenAction.OnDeleteImage(image))
+                                           })
+                                   }
+                               }
 
-                        Spacer(Modifier.height(12.dp))
-                        BasicTextWithHeader(
-                            headerTitle = stringResource(R.string.name),
-                            onValueChange = { onAction(AddFoodScreenAction.OnNameChange(it)) },
-                            text = addFoodState.foodName,
-                            minLines = 1,
-                            placeholder = stringResource(R.string.enter_food_name)
-                        )
+                               Spacer(Modifier.height(12.dp))
+                               BasicTextWithHeader(
+                                   headerTitle = stringResource(R.string.name),
+                                   onValueChange = { onAction(AddFoodScreenAction.OnNameChange(it)) },
+                                   text = addFoodState.foodName,
+                                   minLines = 1,
+                                   placeholder = stringResource(R.string.enter_food_name)
+                               )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                               Spacer(modifier = Modifier.height(16.dp))
 
-                        BasicTextWithHeader(
-                            headerTitle = stringResource(R.string.descripton),
-                            onValueChange = { onAction(AddFoodScreenAction.OnDescriptionChange(it)) },
-                            text = addFoodState.foodDescription,
-                            singleLine = false,
-                            minLines = 3,
-                            placeholder = stringResource(R.string.enter_food_description)
-                        )
+                               BasicTextWithHeader(
+                                   headerTitle = stringResource(R.string.descripton),
+                                   onValueChange = { onAction(AddFoodScreenAction.OnDescriptionChange(it)) },
+                                   text = addFoodState.foodDescription,
+                                   singleLine = false,
+                                   minLines = 3,
+                                   placeholder = stringResource(R.string.enter_food_description)
+                               )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                               Spacer(modifier = Modifier.height(16.dp))
 
-                        var expandedCategory by remember { mutableStateOf(false) }
-                        OutlineExposedDropdownMenuBox(
-                            headerTitle = stringResource(R.string.category),
-                            placeholder = stringResource(R.string.select_a_category),
-                            expanded = expandedCategory,
-                            value = addFoodState.foodCategory,
-                            onExpandedChange = {
-                                expandedCategory = it
-                            },
-                            onSelectedCategory = {
-                                onAction(
-                                    AddFoodScreenAction.OnCategorySelected(it)
-                                )
-                            },
-                            onDismissCategories = {
-                                expandedCategory = false
-                            },
-                        )
+                               var expandedCategory by remember { mutableStateOf(false) }
+                               OutlineExposedDropdownMenuBox(
+                                   headerTitle = stringResource(R.string.category),
+                                   placeholder = stringResource(R.string.select_a_category),
+                                   expanded = expandedCategory,
+                                   value = addFoodState.foodCategory,
+                                   onExpandedChange = {
+                                       expandedCategory = it
+                                   },
+                                   onSelectedCategory = {
+                                       onAction(
+                                           AddFoodScreenAction.OnCategorySelected(it)
+                                       )
+                                   },
+                                   onDismissCategories = {
+                                       expandedCategory = false
+                                   },
+                               )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                               Spacer(modifier = Modifier.height(16.dp))
 
-                        BasicTextWithHeader(
-                            text = addFoodState.foodCalories,
-                            headerTitle = stringResource(R.string.calories),
-                            onValueChange = { onAction(AddFoodScreenAction.OnCaloriesChange(it)) },
-                            placeholder = stringResource(R.string.enter_food_description),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            singleLine = true
-                        )
+                               BasicTextWithHeader(
+                                   text = addFoodState.foodCalories,
+                                   headerTitle = stringResource(R.string.calories),
+                                   onValueChange = { onAction(AddFoodScreenAction.OnCaloriesChange(it)) },
+                                   placeholder = stringResource(R.string.enter_food_description),
+                                   keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                   singleLine = true
+                               )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                               Spacer(modifier = Modifier.height(16.dp))
 
-                        var expandedTag by remember { mutableStateOf(false) }
-                        OutlineExposedDropdownTags(
-                            headerTitle = stringResource(R.string.tags),
-                            expanded = expandedTag,
-                            menuItems = addFoodState.tags.toList(),
-                            value = addFoodState.selectedTags.toList(),
-                            onExpandedChange = { expandedTag = it },
-                            onDismissTagMenu = { expandedTag = false },
-                            onSelectedTag = { tag -> onAction(AddFoodScreenAction.OnTagSelected(tag)) },
-                            onRemoveTag = { tag -> onAction(AddFoodScreenAction.OnDeleteTag(tag)) }
-                        )
+                               var expandedTag by remember { mutableStateOf(false) }
+                               OutlineExposedDropdownTags(
+                                   headerTitle = stringResource(R.string.tags),
+                                   expanded = expandedTag,
+                                   menuItems = addFoodState.tags.toList(),
+                                   value = addFoodState.selectedTags.toList(),
+                                   onExpandedChange = { expandedTag = it },
+                                   onDismissTagMenu = { expandedTag = false },
+                                   onSelectedTag = { tag -> onAction(AddFoodScreenAction.OnTagSelected(tag)) },
+                                   onRemoveTag = { tag -> onAction(AddFoodScreenAction.OnDeleteTag(tag)) }
+                               )
 
-                        Spacer(modifier = Modifier.height(4.dp))
+                               Spacer(modifier = Modifier.height(4.dp))
 
-                        Text(
-                            text = stringResource(R.string.tag_message),
-                            style = MaterialTheme.typography.labelSmall,
-                            fontSize = 12.sp
-                        )
+                               Text(
+                                   text = stringResource(R.string.tag_message),
+                                   style = MaterialTheme.typography.labelSmall,
+                                   fontSize = 12.sp
+                               )
 
-                        Spacer(modifier = Modifier.weight(1f))
+                               Spacer(modifier = Modifier.weight(1f))
+
+                           }
+                       )
 
                         Button(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 16.dp),
+                                .padding(bottom = 50.dp),
                             enabled = addFoodButtonState,
                             shape = RoundedCornerShape(4.dp),
                             colors = ButtonDefaults.buttonColors(
